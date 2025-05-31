@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sigma Srikanta's Microcontroller Notes</title>
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+}
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    margin: 0 auto 20px;
+    display: block;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    object-fit: cover;
+}
+.header h1 {
+    font-size: 2.5em;
+    margin: 10px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+    from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px #fff; }
+    to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px #fff, 0 0 30px #fff; }
+}
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 10px;
+}
+.tab-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px 25px 0 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    outline: none;
+}
+.tab-btn.active {
+    background: #fff;
+    color: #764ba2;
+    border-bottom: 3px solid #764ba2;
+    box-shadow: none;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.controls {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.controls button {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 0 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.controls button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+.mindmap-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+    min-height: 800px;
+    position: relative;
+}
+.node {
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    position: relative;
+    max-width: 360px;
+}
+.node:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.node-header {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    user-select: none;
+}
+.main-node {
+    background: linear-gradient(45deg, #ff9a9e, #fecfef) !important;
+    font-size: 2em !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.controller-8051 {
+    background: linear-gradient(45deg, #a8edea, #fed6e3) !important;
+    border-color: #4ecdc4;
+}
+.controller-8085 {
+    background: linear-gradient(45deg, #ffecd2, #fcb69f) !important;
+    border-color: #ff6b6b;
+}
+.controller-8086 {
+    background: linear-gradient(45deg, #e0c3fc, #9bb5ff) !important;
+    border-color: #667eea;
+}
+.node-content { padding: 10px 0; }
+.sub-node {
+    background: rgba(255,255,255,0.8);
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+.sub-node:hover {
+    background: rgba(255,255,255,1);
+    transform: translateX(10px);
+}
+.sub-node.arch { border-color: #e74c3c; }
+.sub-node.memory { border-color: #3498db; }
+.sub-node.interrupt { border-color: #f39c12; }
+.sub-node.timer { border-color: #27ae60; }
+.sub-node.serial { border-color: #9b59b6; }
+.sub-node.flag { border-color: #e67e22; }
+.sub-node.dma { border-color: #1abc9c; }
+.sub-node.register { border-color: #34495e; }
+.sub-node.instruction { border-color: #8e44ad; }
+.sub-node.bus { border-color: #c0392b; }
+.sub-node-title {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+.sub-node-item {
+    margin: 5px 0;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+.toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 1.5em;
+    transition: transform 0.3s ease;
+}
+.node.collapsed .node-content { display: none; }
+.node.collapsed .toggle-icon { transform: rotate(180deg); }
+.info-section {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 30px;
+    text-align: center;
+}
+.info-section ul, .info-section p, .info-section h3 {
+    text-align: left;
+    max-width: 900px;
+    margin: 0 auto 10px auto;
+}
+.hashtag {
+    color: #4ecdc4;
+    font-weight: bold;
+}
+@media (max-width: 900px) {
+    .mindmap-container { flex-direction: column; align-items: center; }
+    .node { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="batman.jpg" alt="Sigma Srikanta" class="profile-img">
+        <h1>🎯 Sigma Srikanta Notes 🎯</h1>
+        <p><span class="hashtag">#OPENTOWORK</span> Microcontroller Madness - The Ultimate Skibbidi Baller Guide! 🔥💯</p>
+    </div>
+    <div class="tabs">
+        <button class="tab-btn active" id="tab-mindmap">Mindmap</button>
+        <button class="tab-btn" id="tab-theory">Theory</button>
+    </div>
+    <!-- Mindmap Tab -->
+    <div class="tab-content active" id="mindmap-tab-content">
+        <div class="controls">
+            <button id="expand-all">🚀 Expand All Rizz</button>
+            <button id="collapse-all">📱 Collapse All Vibes</button>
+            <button id="reset">🔄 Reset The Matrix</button>
+        </div>
+        <div class="mindmap-container" id="mindmap-root">
+            <!-- Main Central Node -->
+            <div class="node main-controller">
+                <div class="node-header main-node">
+                    🧠 MICROCONTROLLER UNIVERSE 🧠
+                    <span class="toggle-icon">🎯</span>
+                </div>
+                <div class="node-content">
+                    <div class="sub-node">
+                        <div class="sub-node-title">The Holy Trinity of Processors 🛐</div>
+                        <div class="sub-node-item">8051 - The OG Legend ⚡</div>
+                        <div class="sub-node-item">8085 - The Classic Beast 🦁</div>
+                        <div class="sub-node-item">8086 - The 16-bit Chad 💪</div>
+                    </div>
+                </div>
+            </div>
+            <!-- 8051 Node (Expanded) -->
+            <div class="node controller-8051">
+                <div class="node-header">
+                    💎 8051 - The Sigma Original 💎
+                    <span class="toggle-icon">⬇️</span>
+                </div>
+                <div class="node-content">
+                    <div class="sub-node arch">
+                        <div class="sub-node-title">🏗️ Architecture</div>
+                        <div class="sub-node-item">8-bit CPU, Harvard architecture</div>
+                        <div class="sub-node-item">CISC, 40-pin DIP, on-chip oscillator</div>
+                        <div class="sub-node-item">4 parallel I/O ports (32 pins)</div>
+                        <div class="sub-node-item">4 register banks, each with R0-R7</div>
+                        <div class="sub-node-item">Bit-addressable RAM and SFRs</div>
+                        <div class="sub-node-item">On-chip clock circuit</div>
+                    </div>
+                    <div class="sub-node memory">
+                        <div class="sub-node-title">🧠 Memory</div>
+                        <div class="sub-node-item">4KB ROM, 128B RAM</div>
+                        <div class="sub-node-item">64KB external code/data memory</div>
+                        <div class="sub-node-item">Bit-addressable RAM (20H-2FH)</div>
+                        <div class="sub-node-item">SFRs (80H-FFH) for peripherals</div>
+                    </div>
+                    <div class="sub-node interrupt">
+                        <div class="sub-node-title">⚡ Interrupts</div>
+                        <div class="sub-node-item">5 interrupt sources</div>
+                        <div class="sub-node-item">2 external, 2 timer, 1 serial</div>
+                        <div class="sub-node-item">Two priority levels</div>
+                    </div>
+                    <div class="sub-node timer">
+                        <div class="sub-node-title">⏰ Timers/Counters</div>
+                        <div class="sub-node-item">Two 16-bit timers (Timer0, Timer1)</div>
+                        <div class="sub-node-item">Timer/counter modes, auto-reload</div>
+                        <div class="sub-node-item">TMOD, TCON registers</div>
+                    </div>
+                    <div class="sub-node serial">
+                        <div class="sub-node-title">📡 Serial Communication</div>
+                        <div class="sub-node-item">Full-duplex UART</div>
+                        <div class="sub-node-item">Variable baud rate</div>
+                        <div class="sub-node-item">Multiprocessor mode</div>
+                    </div>
+                    <div class="sub-node instruction">
+                        <div class="sub-node-title">🛠️ Instruction Set</div>
+                        <div class="sub-node-item">111 instructions</div>
+                        <div class="sub-node-item">Bit, byte, Boolean, arithmetic, logic, jump</div>
+                        <div class="sub-node-item">Powerful bit manipulation</div>
+                    </div>
+                    <div class="sub-node">
+                        <div class="sub-node-title">🔌 I/O & Power</div>
+                        <div class="sub-node-item">Quasi-bidirectional I/O</div>
+                        <div class="sub-node-item">TTL compatible</div>
+                        <div class="sub-node-item">Idle and Power-down modes</div>
+                    </div>
+                </div>
+            </div>
+            <!-- 8086 Node (Expanded) -->
+            <div class="node controller-8086">
+                <div class="node-header">
+                    💪 8086 - The 16-bit Chad 💪
+                    <span class="toggle-icon">⬇️</span>
+                </div>
+                <div class="node-content">
+                    <div class="sub-node arch">
+                        <div class="sub-node-title">🏛️ Architecture</div>
+                        <div class="sub-node-item">16-bit ALU, 16-bit data bus, 20-bit address bus</div>
+                        <div class="sub-node-item">1MB addressable memory (segmentation)</div>
+                        <div class="sub-node-item">BIU/EU separation for pipelining</div>
+                        <div class="sub-node-item">6-byte instruction queue</div>
+                        <div class="sub-node-item">Minimum/Maximum mode support</div>
+                        <div class="sub-node-item">Multiplexed address/data bus</div>
+                    </div>
+                    <div class="sub-node memory">
+                        <div class="sub-node-title">🧠 Memory & Registers</div>
+                        <div class="sub-node-item">4 segment registers: CS, DS, SS, ES</div>
+                        <div class="sub-node-item">General: AX, BX, CX, DX</div>
+                        <div class="sub-node-item">Pointer: SP, BP; Index: SI, DI</div>
+                        <div class="sub-node-item">Flag register: status/control flags</div>
+                    </div>
+                    <div class="sub-node instruction">
+                        <div class="sub-node-title">🛠️ Instructions</div>
+                        <div class="sub-node-item">String instructions: MOVS, LODS, STOS, CMPS, SCAS</div>
+                        <div class="sub-node-item">Bit/byte/word operations</div>
+                        <div class="sub-node-item">Branching, looping, flag manipulation</div>
+                    </div>
+                    <div class="sub-node interrupt">
+                        <div class="sub-node-title">⚡ Interrupts</div>
+                        <div class="sub-node-item">256 vectored interrupts</div>
+                        <div class="sub-node-item">NMI, INTR, software interrupts</div>
+                    </div>
+                    <div class="sub-node bus">
+                        <div class="sub-node-title">🔌 Bus Interface</div>
+                        <div class="sub-node-item">Multiplexed address/data bus</div>
+                        <div class="sub-node-item">ALE, RD, WR, DEN, DT/R signals</div>
+                    </div>
+                </div>
+            </div>
+            <!-- 8085 Node (Sample) -->
+            <div class="node controller-8085">
+                <div class="node-header">
+                    🦁 8085 - The Classic Alpha 🦁
+                    <span class="toggle-icon">⬇️</span>
+                </div>
+                <div class="node-content">
+                    <div class="sub-node arch">
+                        <div class="sub-node-title">🏛️ Architecture Supremacy</div>
+                        <div class="sub-node-item">8-bit Microprocessor</div>
+                        <div class="sub-node-item">Von Neumann Arch</div>
+                        <div class="sub-node-item">3.072 MHz Clock</div>
+                        <div class="sub-node-item">16-bit Address Bus</div>
+                        <div class="sub-node-item">8-bit Data Bus</div>
+                    </div>
+                    <div class="sub-node memory">
+                        <div class="sub-node-title">🧠 Memory</div>
+                        <div class="sub-node-item">64KB addressable memory</div>
+                        <div class="sub-node-item">Accumulator, 6 general registers</div>
+                    </div>
+                    <div class="sub-node interrupt">
+                        <div class="sub-node-title">⚡ Interrupts</div>
+                        <div class="sub-node-item">5 interrupts: TRAP, RST7.5, RST6.5, RST5.5, INTR</div>
+                        <div class="sub-node-item">TRAP is non-maskable</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Theory Tab -->
+    <div class="tab-content" id="theory-tab-content">
+        <section class="info-section" id="extra-theory-section" style="margin-bottom:40px;">
+            <h2 style="margin-top:0;">Unique 8086 & 8051 Theory (Not in Mindmap)</h2>
+            <div style="text-align:left; max-width: 900px; margin: 0 auto;">
+                <h3>8086 Microprocessor</h3>
+                <ul>
+                    <li><strong>Instruction Queue (Prefetch):</strong> 8086 uses a 6-byte instruction queue for pipelining, allowing the next instruction to be fetched while the current one executes. This increases throughput and is a precursor to modern CPU pipelines.</li>
+                    <li><strong>Minimum/Maximum Mode:</strong> In minimum mode, 8086 acts as a single processor; in maximum mode, it can work in multiprocessor systems with other CPUs or coprocessors (like 8087).</li>
+                    <li><strong>Physical Address Calculation:</strong> Physical address is calculated as: <code>Physical Address = Segment &times; 16 + Offset</code>. This allows access to 1MB memory using 16-bit registers.</li>
+                    <li><strong>String Instructions:</strong> 8086 provides special instructions for block data transfer and manipulation (MOVS, CMPS, SCAS, LODS, STOS) with automatic increment/decrement of pointers.</li>
+                    <li><strong>BIU and EU:</strong> The Bus Interface Unit (BIU) handles instruction fetching and address generation, while the Execution Unit (EU) executes instructions. This separation allows overlapping operations.</li>
+                    <li><strong>Non-Maskable Interrupt (NMI):</strong> Used for urgent events like power failure; cannot be disabled by software.</li>
+                    <li><strong>Segment Override Prefix:</strong> Allows instructions to use a different segment register than the default, providing flexible memory access.</li>
+                </ul>
+                <h3>8051 Microcontroller</h3>
+                <ul>
+                    <li><strong>Bit-Level Addressing:</strong> 8051 can address individual bits in a specific region of RAM and in SFRs, making it highly efficient for control applications (e.g., toggling a single relay or LED).</li>
+                    <li><strong>Boolean Processor:</strong> 8051 includes a Boolean processor for direct bit manipulation, supporting instructions like <code>ANL C, bit</code> and <code>ORL C, bit</code>.</li>
+                    <li><strong>Register Banks:</strong> 8051 has 4 register banks (Bank 0-3), each with 8 registers (R0-R7). The active bank is selected via bits in the Program Status Word (PSW), enabling fast context switching in interrupts.</li>
+                    <li><strong>Power-Saving Modes:</strong> Idle mode halts the CPU but keeps peripherals active; Power-down mode stops the oscillator for ultra-low power consumption.</li>
+                    <li><strong>Watchdog Timer (in some variants):</strong> Resets the microcontroller if the software fails, enhancing reliability in critical applications.</li>
+                    <li><strong>Multiprocessor Communication:</strong> The serial port supports multiprocessor communication mode, allowing several 8051s to share a single serial bus.</li>
+                    <li><strong>Dual Data Pointer (in enhanced 8051s):</strong> Allows faster data movement in block transfers, useful for applications like USB or Ethernet stacks.</li>
+                    <li><strong>Oscillator and Clock Circuit:</strong> 8051 includes an on-chip oscillator and clock circuitry, simplifying hardware design.</li>
+                </ul>
+                <h3>Both (8086 & 8051)</h3>
+                <ul>
+                    <li><strong>Assembler Directives:</strong> Both use assembler directives (ORG, END, DB, EQU, etc.) for memory allocation, code organization, and constants definition.</li>
+                    <li><strong>Interrupt Vector Table:</strong> Both use a fixed table at the start of memory for interrupt service routine addresses.</li>
+                    <li><strong>Application Domains:</strong> 8086 is used in PCs and complex systems; 8051 is dominant in embedded, real-time, and low-power applications.</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+document.getElementById('tab-mindmap').onclick = function() {
+    document.getElementById('mindmap-tab-content').classList.add('active');
+    document.getElementById('theory-tab-content').classList.remove('active');
+    this.classList.add('active');
+    document.getElementById('tab-theory').classList.remove('active');
+};
+document.getElementById('tab-theory').onclick = function() {
+    document.getElementById('mindmap-tab-content').classList.remove('active');
+    document.getElementById('theory-tab-content').classList.add('active');
+    this.classList.add('active');
+    document.getElementById('tab-mindmap').classList.remove('active');
+};
+// Mindmap expand/collapse logic
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.node-header').forEach(function(header) {
+        header.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const node = header.closest('.node');
+            node.classList.toggle('collapsed');
+            const expanded = !node.classList.contains('collapsed');
+            node.setAttribute('aria-expanded', expanded);
+            const icon = header.querySelector('.toggle-icon');
+            if (icon) icon.textContent = expanded ? '⬇️' : '⬆️';
+        });
+    });
+    document.getElementById('expand-all').addEventListener('click', function() {
+        document.querySelectorAll('.node').forEach(function(node) {
+            node.classList.remove('collapsed');
+            node.setAttribute('aria-expanded', 'true');
+            const icon = node.querySelector('.toggle-icon');
+            if (icon) icon.textContent = '⬇️';
+        });
+    });
+    document.getElementById('collapse-all').addEventListener('click', function() {
+        document.querySelectorAll('.node').forEach(function(node) {
+            node.classList.add('collapsed');
+            node.setAttribute('aria-expanded', 'false');
+            const icon = node.querySelector('.toggle-icon');
+            if (icon) icon.textContent = '⬆️';
+        });
+    });
+    document.getElementById('reset').addEventListener('click', function() {
+        document.querySelectorAll('.node').forEach(function(node) {
+            node.classList.remove('collapsed');
+            node.setAttribute('aria-expanded', 'true');
+            const icon = node.querySelector('.toggle-icon');
+            if (icon) icon.textContent = '⬇️';
+        });
+    });
+    // Set initial state (all expanded)
+    document.querySelectorAll('.node').forEach(function(node) {
+        node.classList.remove('collapsed');
+        node.setAttribute('aria-expanded', 'true');
+        const icon = node.querySelector('.toggle-icon');
+        if (icon) icon.textContent = '⬇️';
+    });
+});
+</script>
+</body>
+</html>
